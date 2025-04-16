@@ -10,7 +10,7 @@ import DiscordIcon from "@/public/discord.svg";
 export default function OAuthSignButtons() {
   return (
     <div className="flex justify-center gap-8">
-      <Button type="button" variant={"outline"} onClick={async () => oAuthSignIn("github")} className="flex-1 h-fit">
+      <Button type="button" variant={"outline"} onClick={async () => oAuthSignIn("google")} className="flex-1 h-fit">
         <Image src={GoogleIcon} alt="github icon" className="h-8 w-8" />
         <span>Google</span>
       </Button>

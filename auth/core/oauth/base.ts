@@ -9,6 +9,7 @@ import { CODE_VERIFIER_COOKIE_KEY, STATE_COOKIE_KEY, STATE_EXPIRATION_SECONDS } 
 import { OAuthProvider } from "@prisma/client";
 import { createDiscordOAuthClient } from "@/auth/core/oauth/discord";
 import { createGithubOAuthClient } from "@/auth/core/oauth/github";
+import { createGoogleOAuthClient } from "@/auth/core/oauth/google";
 
 export class OAuthClient<T> {
   private readonly provider: OAuthProvider;
@@ -16,6 +17,7 @@ export class OAuthClient<T> {
   private readonly clientSecret: string;
   private readonly scopes: string[];
   private readonly usePKCE: boolean;
+  private readonly useCodeVerifier: boolean;
   private readonly urls: {
     auth: string;
     token: string;
@@ -64,6 +66,7 @@ export class OAuthClient<T> {
     this.clientSecret = clientSecret;
     this.scopes = scopes;
     this.usePKCE = provider === "discord";
+    this.useCodeVerifier = provider === "github" || provider === "discord";
     this.urls = urls;
     this.userInfo = userInfo;
   }
@@ -94,14 +97,22 @@ export class OAuthClient<T> {
   private async fetchToken(code: string, codeVerifier: string) {
     const res = await axios.post(
       this.urls.token,
-      new URLSearchParams({
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-        code_verifier: codeVerifier,
-        grant_type: "authorization_code",
-        code, // the authorization code from the query
-        redirect_uri: this.redirectUrl.toString(), // must match exactly
-      }),
+      this.useCodeVerifier
+        ? new URLSearchParams({
+            client_id: this.clientId,
+            client_secret: this.clientSecret,
+            code_verifier: codeVerifier,
+            grant_type: "authorization_code",
+            code, // the authorization code from the query
+            redirect_uri: this.redirectUrl.toString(), // must match exactly
+          })
+        : new URLSearchParams({
+            client_id: this.clientId,
+            client_secret: this.clientSecret,
+            grant_type: "authorization_code",
+            code, // the authorization code from the query
+            redirect_uri: this.redirectUrl.toString(), // must match exactly
+          }),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -149,6 +160,8 @@ export function getOAuthClient(provider: OAuthProvider) {
       return createDiscordOAuthClient();
     case "github":
       return createGithubOAuthClient();
+    case "google":
+      return createGoogleOAuthClient();
     default:
       throw new Error(`Invalid provider: ${provider satisfies never}`);
   }
