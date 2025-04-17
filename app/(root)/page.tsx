@@ -5,7 +5,7 @@ export default async function Home() {
 
   return (
     <div>
-      <h1 className="text-7xl font-black">
+      <h1 className="text-3xl md:text-5xl lg:text-7xl font-black">
         Hello&nbsp;<span className="text-muted-foreground">{user?.name || "Guest"}</span>
       </h1>
     </div>

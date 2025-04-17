@@ -61,12 +61,7 @@ export async function signup(formData: FormData): Promise<SignupFormErrorState |
       };
     }
 
-    const sessionError = await createSession({ userId: newUser.id, role: newUser.role }, await cookies());
-    if (sessionError) {
-      return {
-        password: [sessionError],
-      };
-    }
+    await createSession({ userId: newUser.id, role: newUser.role });
   } catch (error) {
     console.log("signup Error:", error);
     return {
@@ -124,12 +119,7 @@ export async function signin(formData: FormData): Promise<SigninFormErrorState |
       };
     }
 
-    const sessionError = await createSession({ userId: user.id, role: user.role }, await cookies());
-    if (sessionError) {
-      return {
-        password: [sessionError],
-      };
-    }
+    await createSession({ userId: user.id, role: user.role });
   } catch (error) {
     console.error("signin Error:", error);
     return {
@@ -141,13 +131,10 @@ export async function signin(formData: FormData): Promise<SigninFormErrorState |
 }
 
 export async function oAuthSignIn(provider: OAuthProvider) {
-  // TODO: Get oAuth url
-
   redirect(getOAuthClient(provider).createAuthUrl(await cookies()));
 }
 
 export async function logout() {
-  // TODO: Implement deleteSessionOnExpiry: deletes the session from database if it is expired
-  await removeUserFromSession(await cookies());
+  await removeUserFromSession();
   revalidatePath("/");
 }
