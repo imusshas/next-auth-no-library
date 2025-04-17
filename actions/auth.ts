@@ -61,7 +61,13 @@ export async function signup(formData: FormData): Promise<SignupFormErrorState |
       };
     }
 
-    await createSession({ userId: newUser.id, role: newUser.role });
+    const sessionUser = await createSession({ userId: newUser.id, role: newUser.role });
+
+    if (!sessionUser) {
+      return {
+        password: ["Unable to create session. Please try again"],
+      };
+    }
   } catch (error) {
     console.log("signup Error:", error);
     return {
@@ -119,7 +125,13 @@ export async function signin(formData: FormData): Promise<SigninFormErrorState |
       };
     }
 
-    await createSession({ userId: user.id, role: user.role });
+    const sessionUser = await createSession({ userId: user.id, role: user.role });
+
+    if (!sessionUser) {
+      return {
+        password: ["Unable to create session. Please try again"],
+      };
+    }
   } catch (error) {
     console.error("signin Error:", error);
     return {
