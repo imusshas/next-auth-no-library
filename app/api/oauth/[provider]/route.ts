@@ -14,8 +14,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const provider = z.nativeEnum(OAuthProvider).parse(rawProvider);
 
   if (typeof code !== "string" || typeof state !== "string") {
-    console.error("/api/oauth/[provider] GET code:", code);
-    console.error("/api/oauth/[provider] GET state:", state);
     redirect(`/sign-in?oauthError=${encodeURIComponent("Failed to connect. Please try again")}`);
   }
 

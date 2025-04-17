@@ -17,7 +17,7 @@ function _getCurrentUser(options: { withFullUser?: false; redirectIfNotFound: tr
 function _getCurrentUser(options?: { withFullUser?: false; redirectIfNotFound?: false }): Promise<User | null>;
 
 async function _getCurrentUser({ withFullUser = false, redirectIfNotFound = false } = {}) {
-  const user = await getUserFromSession(await cookies());
+  const user = await getUserFromSession();
 
   if (!user || user == null) {
     if (redirectIfNotFound) {
@@ -70,13 +70,10 @@ export async function toggleUserRole(): Promise<void> {
       return;
     }
 
-    const updatedSession = await updateUserSession(
-      {
-        userId: updatedUser.id,
-        role: updatedUser.role,
-      },
-      await cookies(),
-    );
+    const updatedSession = await updateUserSession({
+      userId: updatedUser.id,
+      role: updatedUser.role,
+    });
 
     if (!updatedSession) {
       throw new Error("Unable to update the session user");

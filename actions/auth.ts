@@ -148,5 +148,7 @@ export async function oAuthSignIn(provider: OAuthProvider) {
 
 export async function logout() {
   await removeUserFromSession();
+  (await cookies()).delete("oAuthCodeVerifier");
+  (await cookies()).delete("oAuthState");
   revalidatePath("/");
 }

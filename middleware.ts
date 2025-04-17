@@ -15,7 +15,6 @@ export async function middleware(request: NextRequest) {
 
 async function middlewareAuth(request: NextRequest) {
   const user = await getUserFromSession();
-  console.log("middleware", request.nextUrl.pathname);
 
   if (user && authRoutes.includes(request.nextUrl.pathname)) {
     return NextResponse.redirect(new URL("/", request.url));
