@@ -1,5 +1,5 @@
 import { env } from "@/data/env/server";
-import { OAuthClient } from "./base";
+import { OAuthClient } from "@/auth/core/oauth/base";
 import { z } from "zod";
 import axios from "axios";
 

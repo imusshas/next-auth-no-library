@@ -1,30 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromSession, updateUserSessionExpiration } from "@/auth/core/session";
 
+const authRoutes = ["/sign-in", "/sign-up"];
 const privateRoutes = ["/private"];
 const adminRoutes = ["/dashboard"];
 
 export async function middleware(request: NextRequest) {
   const response = (await middlewareAuth(request)) ?? NextResponse.next();
 
-  await updateUserSessionExpiration({
-    set: (key, value, options) => response.cookies.set({ ...options, name: key, value: value }),
-    get: (key) => request.cookies.get(key),
-  });
+  await updateUserSessionExpiration();
 
   return response;
 }
 
 async function middlewareAuth(request: NextRequest) {
+  const user = await getUserFromSession();
+  if (authRoutes.includes(request.nextUrl.pathname)) {
+    if (user) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
   if (privateRoutes.includes(request.nextUrl.pathname)) {
-    const user = await getUserFromSession(request.cookies);
     if (!user) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
   }
 
   if (adminRoutes.includes(request.nextUrl.pathname)) {
-    const user = await getUserFromSession(request.cookies);
     if (!user) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }

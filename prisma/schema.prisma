@@ -19,6 +19,7 @@ enum UserRole {
 }
 
 enum OAuthProvider {
+  google
   discord
   github
 }

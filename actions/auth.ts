@@ -61,10 +61,11 @@ export async function signup(formData: FormData): Promise<SignupFormErrorState |
       };
     }
 
-    const sessionError = await createSession({ userId: newUser.id, role: newUser.role }, await cookies());
-    if (sessionError) {
+    const sessionUser = await createSession({ userId: newUser.id, role: newUser.role });
+
+    if (!sessionUser) {
       return {
-        password: [sessionError],
+        password: ["Unable to create session. Please try again"],
       };
     }
   } catch (error) {
@@ -124,10 +125,11 @@ export async function signin(formData: FormData): Promise<SigninFormErrorState |
       };
     }
 
-    const sessionError = await createSession({ userId: user.id, role: user.role }, await cookies());
-    if (sessionError) {
+    const sessionUser = await createSession({ userId: user.id, role: user.role });
+
+    if (!sessionUser) {
       return {
-        password: [sessionError],
+        password: ["Unable to create session. Please try again"],
       };
     }
   } catch (error) {
@@ -141,13 +143,10 @@ export async function signin(formData: FormData): Promise<SigninFormErrorState |
 }
 
 export async function oAuthSignIn(provider: OAuthProvider) {
-  // TODO: Get oAuth url
-
   redirect(getOAuthClient(provider).createAuthUrl(await cookies()));
 }
 
 export async function logout() {
-  // TODO: Implement deleteSessionOnExpiry: deletes the session from database if it is expired
-  await removeUserFromSession(await cookies());
+  await removeUserFromSession();
   revalidatePath("/");
 }

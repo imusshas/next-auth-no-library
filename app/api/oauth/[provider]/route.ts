@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const oAuthUser = await getOAuthClient(provider).fetchUser(code, state, await cookies());
     const user = await connectUserToAccount(oAuthUser, provider);
-    await createSession({ userId: user.id, role: user.role }, await cookies());
+    await createSession({ userId: user.id, role: user.role });
   } catch (error) {
     console.error("/api/oauth/[provider] GET:", error);
     redirect(`/sign-in?oauthError=${encodeURIComponent("Failed to connect. Please try again")}`);
