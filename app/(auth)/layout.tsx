@@ -4,11 +4,5 @@ export default function AuthLayout({
   children: React.ReactNode;
   title: string;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`antialiased`}>
-        <section className="min-h-screen px-2 flex justify-center items-center">{children}</section>
-      </body>
-    </html>
-  );
+  return <main className="min-h-screen px-2 flex justify-center items-center">{children}</main>;
 }

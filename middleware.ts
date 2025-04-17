@@ -15,15 +15,13 @@ export async function middleware(request: NextRequest) {
 
 async function middlewareAuth(request: NextRequest) {
   const user = await getUserFromSession();
-  if (authRoutes.includes(request.nextUrl.pathname)) {
-    if (user) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  console.log("middleware", request.nextUrl.pathname);
+
+  if (user && authRoutes.includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
-  if (privateRoutes.includes(request.nextUrl.pathname)) {
-    if (!user) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+  if (!user && privateRoutes.includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   if (adminRoutes.includes(request.nextUrl.pathname)) {

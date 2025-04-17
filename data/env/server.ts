@@ -4,8 +4,6 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().min(1),
-    UPSTASH_REDIS_URL: z.string().min(1),
-    UPSTASH_REDIS_TOKEN: z.string().min(1),
     IRON_SESSION_PASSWORD: z.string().min(1),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
